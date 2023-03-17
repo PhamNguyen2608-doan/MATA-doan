@@ -111,6 +111,8 @@ const postSchema = new mongoose.Schema(
       },
     },
 
+    is_active: { type: Boolean, default: true },
+    
     deleted: {
       type: Boolean,
       default: false,

@@ -117,7 +117,11 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
   const following = await Follow.find({ sender: user });
   const followingIds = following.map((el) => el.recipient.toString());
 
-  let filter = { user: { $in: [...followingIds, user] } };
+  let filter = {
+    user: { $in: [...followingIds, user] },
+    is_active: { $eq: true },
+  };
+  
   const features = new APIFeatures(Post.find(filter), req.query)
     .filter()
     .sort()

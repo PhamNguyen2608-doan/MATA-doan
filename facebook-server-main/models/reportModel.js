@@ -27,6 +27,13 @@ const reportSchema = new mongoose.Schema(
   }
 );
 
+reportSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'post',
+  })
+  next();
+});
+
 const Report = mongoose.model('Report', reportSchema);
 
 module.exports = Report;

@@ -9,6 +9,7 @@ const AppError = require('./utils/appError');
 const GlobalErrorHandler = require('./controllers/errorController');
 const { createServer } = require('http');
 
+const adminsRouter = require('./routes/adminRoutes');
 const usersRouter = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
@@ -86,6 +87,7 @@ app.set('view engine', 'pug');
 
 // app.use(express.static(path.join(__dirname, 'build')));
 
+app.use('/api/v1/admins', adminsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/posts', postRoutes);
 app.use('/api/v1/friends', friendsRoutes);

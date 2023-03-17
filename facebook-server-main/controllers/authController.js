@@ -119,12 +119,12 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password', 400));
 
   // check if user exist and password is correct
-  const user = await User.findOne({ email }).select(
+  const user = await User.findOne({ email, is_active: { $eq: true }}).select(
     'first_name last_name username photo verified password confirmed recivedRequestsCount unseenMessages unseenNotification'
   );
 
   if (!user || !(await user.correctPassword(password, user.password)))
-    return next(new AppError('Incorrect email or password', 401));
+    return next(new AppError('Incorrect email or password or account is Blocked', 401));
 
   const recivedRequestsCount = await Friend.countDocuments({
     recipient: user.id,

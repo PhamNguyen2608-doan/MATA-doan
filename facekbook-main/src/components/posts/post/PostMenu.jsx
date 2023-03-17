@@ -4,6 +4,7 @@ import useOnClickOutside from "../../../hooks/useOnClickOutside";
 import Card from "../../UI/Card/Card";
 import MenuItem from "./MenuItem";
 import classes from "./Post.module.css";
+import axios from "axios";
 import { saveAs } from "file-saver";
 import { IoIosLink } from "react-icons/io";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -17,6 +18,21 @@ function PostMenu({ showMenu, setShowMenu, post, user, postRef }) {
   const deleteHandler = () => {
     mutate({ post: post._id });
   };
+
+  const reportHandler = async () => {
+    await axios.post(
+      `${process.env.REACT_APP_BACKEND_URL}/api/v1/reports/create`,
+      {
+        post: post._id
+      },
+      {
+        withCredentials: true,
+      }
+    ).then(() => {
+      toast.success("Report Successfully!");
+      setShowMenu(false);
+    });
+  }
 
   const downloadImages = async () => {
     post.images.foreach((img) => {
@@ -77,6 +93,18 @@ function PostMenu({ showMenu, setShowMenu, post, user, postRef }) {
                 icon="trash_icon"
                 title="Move to trash"
                 subtitle="items in your trash are deleted after 30 days"
+              />
+            </div>
+          </>
+        )}
+        {!isOwner && (
+          <>
+            <div className="line" />
+            <div onClick={() => reportHandler()}>
+              <MenuItem
+                icon="trash_icon"
+                title="Report Post"
+                subtitle="I'm worried about this post"
               />
             </div>
           </>

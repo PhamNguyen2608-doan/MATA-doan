@@ -9,11 +9,13 @@ const AppError = require('./utils/appError');
 const GlobalErrorHandler = require('./controllers/errorController');
 const { createServer } = require('http');
 
+const adminsRouter = require('./routes/adminRoutes');
 const usersRouter = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const reportsRoutes = require('./routes/reportsRoutes');
 
 const app = express();
 
@@ -85,11 +87,13 @@ app.set('view engine', 'pug');
 
 // app.use(express.static(path.join(__dirname, 'build')));
 
+app.use('/api/v1/admins', adminsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/posts', postRoutes);
 app.use('/api/v1/friends', friendsRoutes);
 app.use('/api/v1/chats', chatRoutes);
 app.use('/api/v1/messages', messagesRoutes);
+app.use('/api/v1/reports', reportsRoutes);
 
 // app.use((req, res, next) => {
 //   res.sendFile(path.join(__dirname, 'build', 'index.html'));

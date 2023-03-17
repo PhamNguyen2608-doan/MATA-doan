@@ -149,6 +149,8 @@ const userSchema = new mongoose.Schema(
 
     unseenNotification: { type: Number, default: 0 },
 
+    is_active: { type: Boolean, default: true },
+
     search: [
       {
         user: {

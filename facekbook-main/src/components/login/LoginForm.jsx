@@ -61,7 +61,7 @@ function LoginForm({ setRenderSignUp }) {
   return (
     <main className={styles.main}>
       <div className={styles.header}>
-        <img src="../../icons/mata-logo-main.png" alt="" />
+        <img src="../../icons/mata-icon.png" alt="" />
         <span>
           Mata helps you connect and share with the people in your life.
         </span>

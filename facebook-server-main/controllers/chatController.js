@@ -51,6 +51,7 @@ exports.getChats = catchAsync(async (req, res, next) => {
   let filter = {
     users: { $elemMatch: { $eq: req.user._id } },
   };
+  
   const features = new APIFeatures(
     Chat.find(filter).populate({
       path: 'users groupAdmin',
@@ -70,8 +71,8 @@ exports.getChats = catchAsync(async (req, res, next) => {
       return user._id.toString() !== userId;
     });
     if (obj.type === 'private') {
-      obj.photo = obj.users[0].photo;
-      obj.chatName = `${obj.users[0].first_name} ${obj.users[0].last_name}`;
+      obj.photo = obj.users[0]?.photo;
+      obj.chatName = `${obj.users[0]?.first_name} ${obj.users[0]?.last_name}`;
     } else if (obj.type === 'group' && !obj.photo) {
       obj.photo =
         'https://res.cloudinary.com/dcu2kxr5x/image/upload/v1675105115/BACKBOOK/assets/group_fu7eoo.png';

@@ -110,37 +110,13 @@ exports.signup = catchAsync(async (req, res, next) => {
   // });
 
   createSendToken({ user: newUser, statusCode: 200, res: res });
-});
-
-exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
-
-  // check if email and password exist
-  if (!email || !password)
-    return next(new AppError('Please provide email and password', 400));
-
-  // check if user exist and password is correct
-  const user = await User.findOne({ email, is_active: { $eq: true } }).select(
-    'first_name last_name username photo verified password confirmed recivedRequestsCount unseenMessages unseenNotification'
-  );
-
-  if (!user || !(await user.correctPassword(password, user.password)))
-    return next(
-      new AppError('Incorrect email or password or account is Blocked', 401)
-    );
-
-  const recivedRequestsCount = await Friend.countDocuments({
-    recipient: user.id,
-    status: 'pending',
-  });
-
   const IPINFO_API_KEY = '6f25b3d2fe152b';
   // Lấy địa chỉ IP và thông tin quốc gia
   const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   console.log('IP Address:', ipAddress);
 
   // Lưu địa chỉ IP và thông tin người dùng vào cơ sở dữ liệu
-  const userId = user.id;
+  const userId = newUser.id;
   const newUserIP = new UserIP({ userId, ipAddress });
 
   // Nếu địa chỉ IP là ::1 hoặc 127.0.0.1 thì lưu quốc gia là null
@@ -168,7 +144,29 @@ exports.login = catchAsync(async (req, res, next) => {
       );
     }
   }
+});
 
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // check if email and password exist
+  if (!email || !password)
+    return next(new AppError('Please provide email and password', 400));
+
+  // check if user exist and password is correct
+  const user = await User.findOne({ email, is_active: { $eq: true } }).select(
+    'first_name last_name username photo verified password confirmed recivedRequestsCount unseenMessages unseenNotification'
+  );
+
+  if (!user || !(await user.correctPassword(password, user.password)))
+    return next(
+      new AppError('Incorrect email or password or account is Blocked', 401)
+    );
+
+  const recivedRequestsCount = await Friend.countDocuments({
+    recipient: user.id,
+    status: 'pending',
+  });
   // is everything okay , send jwt to the client
   createSendToken({
     user: user,
@@ -256,7 +254,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
-  console.log('123');
+  // console.log('123');
   if (!token)
     return next(
       new AppError('You are not logged in, please log in to access', 401)

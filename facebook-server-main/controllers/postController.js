@@ -112,16 +112,16 @@ exports.createPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  const user = req.user.id;
+  const user = req.user?.id;
   // const posts = await Post.find().sort({ createdAt: -1 });
   const following = await Follow.find({ sender: user });
   const followingIds = following.map((el) => el.recipient.toString());
-
+  console.log('get all post');
   let filter = {
     user: { $in: [...followingIds, user] },
     is_active: { $eq: true },
   };
-  
+
   const features = new APIFeatures(Post.find(filter), req.query)
     .filter()
     .sort()
@@ -144,7 +144,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 
     return post;
   });
-
+  console.log("get all post")
   // console.log(reactions);
   res.status(200).json({
     status: 'success',
@@ -156,7 +156,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 exports.getPost = catchAsync(async (req, res, next) => {
   const post = req.params.postID;
   const user = req.user.id;
-
+  console.log('getAllPosst');
   const checkPost = await Post.findById(post);
   if (!checkPost) return next(new AppError('No post found', 404));
 

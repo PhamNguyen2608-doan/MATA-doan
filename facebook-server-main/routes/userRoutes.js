@@ -1,7 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
-const ipController = require('../controllers/ipController');
 const router = express.Router();
 
 router.post('/signup', authController.signup);
@@ -24,7 +23,7 @@ router.put('/ping', authController.ping);
 router.post('/emailVerification', authController.activateAccount);
 router.post('/resendEmailVerifivation', authController.resendEmailVerification);
 
-router.get('/getProfile/:username',ipController.getCountryByIP, userController.getProfile);
+router.get('/getProfile/:username', userController.getProfile);
 router.get('/getProfile/:username/photos', userController.getPhotos);
 router.get('/getProfile/:username/posts', userController.getUserPosts);
 router.put('/update/profile/details', userController.updateDetails);

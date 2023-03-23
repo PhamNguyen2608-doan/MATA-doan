@@ -1,9 +1,9 @@
 const express = require('express');
 const authController = require('../controllers/authController');
 const postController = require('../controllers/postController');
-const ipController = require('../controllers/ipController');
-const router = express.Router();
 
+const router = express.Router();
+ 
 router.use(authController.protect);
 
 router.post(
@@ -14,7 +14,7 @@ router.post(
 );
 router.post('/createPost', postController.createPost);
 router.put('/:postID', postController.deletePost);
-router.get('/getAllPosts',ipController.getCountryByIP ,postController.getAllPosts);
+router.get('/getAllPosts',postController.getAllPosts);
 router.get('/:postID', postController.getPost);
 
 router.put('/:postID/reacts', postController.addReact);

@@ -114,13 +114,13 @@ module.exports = class Email {
   }
 
   async sendVerificationEmail() {
-    await this.send('VerificationEmail', 'Backbook email verification');
+    await this.send('VerificationEmail', 'Mata email verification');
   }
 
   async sendPasswordReset() {
     await this.send(
       'PasswordReset',
-      `${this.url} is your Backbook recovery code ( Valid for 10 min )`
+      `${this.url} is your Mata recovery code ( Valid for 10 min )`
     );
   }
 };

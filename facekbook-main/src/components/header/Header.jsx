@@ -54,7 +54,7 @@ function Header() {
       <div className={styles.left}>
         <Link to="/" className={styles.logo}>
           <div className={styles.circle}>
-            <Logo width={200} />
+            <Logo width={50} />
           </div>
         </Link>
         <div
@@ -69,7 +69,7 @@ function Header() {
             ref={input}
             type="text"
             name="search"
-            placeholder="Search Backbook"
+            placeholder="Search Mata"
             className={styles.input}
             onFocus={() => {
               setShowIcon(false);

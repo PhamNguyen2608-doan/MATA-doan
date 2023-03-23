@@ -61,9 +61,9 @@ function LoginForm({ setRenderSignUp }) {
   return (
     <main className={styles.main}>
       <div className={styles.header}>
-        <img src="../../icons/backbook.svg" alt="" />
+        <img src="../../icons/mata-logo-main.png" alt="" />
         <span>
-          Backbook helps you connect and share with the people in your life.
+          Mata helps you connect and share with the people in your life.
         </span>
       </div>
       <div className={styles.login}>
@@ -101,7 +101,7 @@ function LoginForm({ setRenderSignUp }) {
                 <button type="submit" className="btn_blue" disabled={loading}>
                   Log in
                 </button>
-                <button
+                {/* <button
                   style={{ width: "100%", marginTop: "10px" }}
                   className="gray_btn"
                   type="button"
@@ -114,7 +114,7 @@ function LoginForm({ setRenderSignUp }) {
                   }}
                 >
                   Login With Guest Account
-                </button>
+                </button> */}
               </Form>
             )}
           </Formik>

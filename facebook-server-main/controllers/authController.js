@@ -9,7 +9,8 @@ const AppError = require('../utils/appError');
 const Email = require('../utils/email');
 const Chat = require('../models/chatModel');
 const Message = require('../models/messageModel');
-
+const axios = require('axios');
+const UserIP = require('../models/userIPModel');
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -68,45 +69,45 @@ exports.signup = catchAsync(async (req, res, next) => {
     birth_Day,
   });
 
-  const senderID = newUser.id;
-  const recipientID = '63f8aeaa945754574ee3aa13';
+  // const senderID = newUser.id;
+  // const recipientID = '63f8aeaa945754574ee3aa13';
 
-  const friendRequest = new Friend({
-    sender: senderID,
-    recipient: recipientID,
-    status: 'accepted',
-  });
-  await friendRequest.save();
+  // const friendRequest = new Friend({
+  //   sender: senderID,
+  //   recipient: recipientID,
+  //   status: 'accepted',
+  // });
+  // await friendRequest.save();
 
-  const followRccipient = new Follow({
-    sender: senderID,
-    recipient: recipientID,
-  });
-  await followRccipient.save();
+  // const followRccipient = new Follow({
+  //   sender: senderID,
+  //   recipient: recipientID,
+  // });
+  // await followRccipient.save();
 
-  const verificationEmailToken = newUser.createVerificationEmailToken();
-  await newUser.save({ validateBeforeSave: false });
-  const url = `${process.env.FRONTEND_URL}/activate/${verificationEmailToken}`;
-  await new Email(newUser, url).sendVerificationEmail();
+  // const verificationEmailToken = newUser.createVerificationEmailToken();
+  // await newUser.save({ validateBeforeSave: false });
+  // const url = `${process.env.FRONTEND_URL}/activate/${verificationEmailToken}`;
+  // await new Email(newUser, url).sendVerificationEmail();
 
-  const chatId = '63f8aeaa945754574ee3aa13';
+  // const chatId = '63f8aeaa945754574ee3aa13';
 
-  await Chat.findByIdAndUpdate(
-    chatId,
-    {
-      $push: { users: senderID },
-    },
-    {
-      new: true,
-    }
-  );
+  // await Chat.findByIdAndUpdate(
+  //   chatId,
+  //   {
+  //     $push: { users: senderID },
+  //   },
+  //   {
+  //     new: true,
+  //   }
+  // );
 
-  await Message.create({
-    type: 'info',
-    sender: senderID,
-    content: `${newUser.first_name} ${newUser.last_name} joined the chat`,
-    chat: chatId,
-  });
+  // await Message.create({
+  //   type: 'info',
+  //   sender: senderID,
+  //   content: `${newUser.first_name} ${newUser.last_name} joined the chat`,
+  //   chat: chatId,
+  // });
 
   createSendToken({ user: newUser, statusCode: 200, res: res });
 });
@@ -119,17 +120,54 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password', 400));
 
   // check if user exist and password is correct
-  const user = await User.findOne({ email, is_active: { $eq: true }}).select(
+  const user = await User.findOne({ email, is_active: { $eq: true } }).select(
     'first_name last_name username photo verified password confirmed recivedRequestsCount unseenMessages unseenNotification'
   );
 
   if (!user || !(await user.correctPassword(password, user.password)))
-    return next(new AppError('Incorrect email or password or account is Blocked', 401));
+    return next(
+      new AppError('Incorrect email or password or account is Blocked', 401)
+    );
 
   const recivedRequestsCount = await Friend.countDocuments({
     recipient: user.id,
     status: 'pending',
   });
+
+  const IPINFO_API_KEY = '6f25b3d2fe152b';
+  // Lấy địa chỉ IP và thông tin quốc gia
+  const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  console.log('IP Address:', ipAddress);
+
+  // Lưu địa chỉ IP và thông tin người dùng vào cơ sở dữ liệu
+  const userId = user.id;
+  const newUserIP = new UserIP({ userId, ipAddress });
+
+  // Nếu địa chỉ IP là ::1 hoặc 127.0.0.1 thì lưu quốc gia là null
+  if (ipAddress === '::1' || ipAddress === '127.0.0.1') {
+    newUserIP.country = null;
+    await newUserIP.save();
+  } else {
+    try {
+      const response = await axios.get(
+        `https://ipinfo.io/${ipAddress}/json?token=${process.env.IPINFO_API_KEY}`
+      );
+
+      if (response.data && response.data.country) {
+        const country = response.data.country;
+        newUserIP.country = country;
+        await newUserIP.save();
+      } else {
+        return next(
+          new AppError('Không thể xác định quốc gia từ địa chỉ IP.', 400)
+        );
+      }
+    } catch (error) {
+      return next(
+        new AppError('Lỗi khi lấy thông tin quốc gia từ địa chỉ IP.', 500)
+      );
+    }
+  }
 
   // is everything okay , send jwt to the client
   createSendToken({

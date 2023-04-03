@@ -16,7 +16,7 @@ const friendsRoutes = require('./routes/friendsRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const reportsRoutes = require('./routes/reportsRoutes');
-
+const storyRoutes =require('./routes/storyRoutes');
 const app = express();
 
 const whitelist = [
@@ -95,7 +95,7 @@ app.use('/api/v1/friends', friendsRoutes);
 app.use('/api/v1/chats', chatRoutes);
 app.use('/api/v1/messages', messagesRoutes);
 app.use('/api/v1/reports', reportsRoutes);
-
+app.use('/api/v1/stories', storyRoutes);
 // app.use((req, res, next) => {
 //   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });

@@ -70,6 +70,9 @@
 .story:hover .story_img {
   transform: scale(1.1);
 }
+.story_profile_pic.displayed {
+  border: 2px solid gray;
+}
 
 .story_profile_pic {
   position: absolute;

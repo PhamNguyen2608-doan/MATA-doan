@@ -1,16 +1,9 @@
-import React, {
-  useState,
-  useCallback,
-  useImperativeHandle,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useState, useCallback, useImperativeHandle } from "react";
 import Cropper from "react-easy-crop";
 import "./ImageUploadBox.css";
 import axios from "axios";
-import BounceLoader from "react-spinners/BounceLoader";
+import BounceLoader  from "react-spinners/BounceLoader";
 import { useNavigate } from "react-router-dom";
-import { fabric } from "fabric";
 
 const ImageUploadBox = React.forwardRef((props, ref) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -25,8 +18,8 @@ const ImageUploadBox = React.forwardRef((props, ref) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  const getCroppedImage = async (imageSrc, croppedAreaPixels) => {
-    const image = await loadImage(imageSrc);
+  const getCroppedImage = async (croppedAreaPixels) => {
+    const image = await loadImage(props.image);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -45,10 +38,14 @@ const ImageUploadBox = React.forwardRef((props, ref) => {
       croppedAreaPixels.height
     );
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
-        resolve(blob);
-      }, "image/jpeg");
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Không thể chuyển đổi canvas thành Blob"));
+        }
+      }, "image/png");
     });
   };
 
@@ -61,7 +58,9 @@ const ImageUploadBox = React.forwardRef((props, ref) => {
   //   });
   // }
   const handleShare = async () => {
+    console.log("hi: ");
     const croppedImageBlob = await getCroppedImage(croppedAreaPixels);
+    console.log("croppedImageBlob: ", croppedImageBlob);
 
     // đẩy hình ảnh đã cắt lên cơ sở dữ liệu.
     // Chuyển đổi Blob thành File
@@ -96,6 +95,7 @@ const ImageUploadBox = React.forwardRef((props, ref) => {
       navigate("/");
       // setSuccess(true);
     } catch (error) {
+      console.error("Lỗi khi tải hình ảnh:", error);
       console.log("Cropped image as File:", croppedImageFile);
       // setMessage("Lỗi trong quá trình tải ảnh lên");
       setUploading(false);
@@ -125,7 +125,6 @@ const ImageUploadBox = React.forwardRef((props, ref) => {
           <div className="overlay"></div>
           <div className="loading-overlay">
             <BounceLoader color="#0C88EF" loading={uploading} size={150} />
-            {/* <StoryItem/> */}
           </div>
         </div>
       )}

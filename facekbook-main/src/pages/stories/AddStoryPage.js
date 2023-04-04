@@ -28,9 +28,6 @@ const AddStoryPage = (props) => {
   const handleButtonClick = () => {
     imageUploadBoxRef.current.handleShare();
   };
-  const handleAddText = () => {
-    imageUploadBoxRef.current.addTextToImage();
-  };
   return (
     <div className="container">
       <div className="nav">
@@ -56,7 +53,7 @@ const AddStoryPage = (props) => {
                   <div className="textIcon">Aa</div>
                 </div>
 
-                <button className="addText" onClick={handleAddText}>
+                <button className="addText" >
                   Add text
                 </button>
               </div>

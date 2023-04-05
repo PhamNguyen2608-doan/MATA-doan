@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
+const cron = require('node-cron');
+const { PostScanner } = require('./controllers/ScannerController');
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   console.log(err.name, err.message, err.stack);
@@ -27,7 +28,9 @@ const port = process.env.PORT || 3000;
 const server = httpServer.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
-
+cron.schedule('*/5 * * * *', () => {
+  PostScanner();
+});
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   console.log(err.name, err.message);

@@ -39,3 +39,18 @@ exports.getImages = async (path, max, sort) => {
       });
   });
 };
+exports.deleteImageFromCloudinary=async (publicId)=> {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    return result;
+  } catch (error) {
+    console.error('Error deleting image from Cloudinary:', error);
+    throw error;
+  }
+}
+ exports.getPublicIdFromUrl= (url) => {
+  const pathArray = url.split('/');
+  const fileName = pathArray[pathArray.length - 1];
+  const [publicId] = fileName.split('.');
+  return publicId;
+}

@@ -9,7 +9,11 @@ const Comment = require('../models/commentModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
-const { uploadToCloudinary } = require('../utils/cloudinaryHandler');
+const {
+  uploadToCloudinary,
+  deleteImageFromCloudinary,
+  getPublicIdFromUrl,
+} = require('../utils/cloudinaryHandler');
 const Notification = require('../utils/notification');
 
 const filterObj = (obj, ...allowed) => {
@@ -177,6 +181,24 @@ exports.getPost = catchAsync(async (req, res, next) => {
   });
 });
 
+// exports.deletePost = catchAsync(async (req, res, next) => {
+//   const post = req.params.postID;
+//   const user = req.user.id;
+
+//   const checkPost = await Post.findById(post);
+//   if (!checkPost) return next(new AppError('No post found', 404));
+
+//   if (checkPost.user.id !== user)
+//     return next(new AppError('You are not the owner of this post', 404));
+
+//   checkPost.deleted = true;
+//   await checkPost.save();
+
+//   // Send reponse
+//   res.status(200).json({
+//     status: 'success',
+//   });
+// });
 exports.deletePost = catchAsync(async (req, res, next) => {
   const post = req.params.postID;
   const user = req.user.id;
@@ -187,8 +209,16 @@ exports.deletePost = catchAsync(async (req, res, next) => {
   if (checkPost.user.id !== user)
     return next(new AppError('You are not the owner of this post', 404));
 
+  // Delete images from Cloudinary
+  if (checkPost.images && checkPost.images.length > 0) {
+    for (const imageUrl of checkPost.images) {
+      const publicId = getPublicIdFromUrl(imageUrl);
+      await deleteImageFromCloudinary(publicId);
+    }
+  }
+
   checkPost.deleted = true;
-  await checkPost.save();
+  await checkPost.save({ validateBeforeSave: false });
 
   // Send reponse
   res.status(200).json({

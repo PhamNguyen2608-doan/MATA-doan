@@ -152,8 +152,8 @@ function StoryDetailsPage(props) {
   };
   const nextButtonStyle = {
     position: "absolute",
-    bottom: "65px",
-    right: "10px",
+    bottom: "50%",
+    right: "35%",
     backgroundColor: "#ffffff",
     borderRadius: "50%",
     width: "50px",
@@ -174,7 +174,7 @@ function StoryDetailsPage(props) {
           <span>x</span>
         </div>
         <div style={nextButtonStyle} onClick={handleButtonClick}>
-          <span>Next</span>
+          <span>&gt;</span>
         </div>
         {!instaStory && (
           <Stories

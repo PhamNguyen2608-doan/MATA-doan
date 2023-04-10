@@ -151,4 +151,16 @@ module.exports = class Notification {
     });
     return noti;
   }
+  async sendPolicyViolation() {
+    const postLink = `${process.env.FRONTEND_URL}/policy-violation`;
+    const path = '/policy-violation'; 
+
+    const noti = await this.send({
+      body: 'Your post has violated our policies.',
+      click: postLink,
+      type: 'policy_violation',
+      path: path,
+    });
+    return noti;
+  }
 };

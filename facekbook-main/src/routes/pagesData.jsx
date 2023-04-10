@@ -8,8 +8,12 @@ const FriendsPage = React.lazy(() => import("../pages/friends"));
 const PostPage = React.lazy(() => import("../pages/post/PostPage"));
 const Messages = React.lazy(() => import("../pages/messages"));
 const AddStoryPage = React.lazy(() => import("../pages/stories/AddStoryPage"));
-const StoryDetailsPage = React.lazy(() =>import("../components/home/stories/StoryDetailsPage"));
-
+const StoryDetailsPage = React.lazy(() =>
+  import("../components/home/stories/StoryDetailsPage")
+);
+const ViolationPage = React.lazy(() =>
+  import("../components/UI/ViolationPage/ViolationPage.js")
+);
 const pagesData = [
   {
     path: "",
@@ -87,6 +91,12 @@ const pagesData = [
     path: "/stories/:storyId",
     element: <StoryDetailsPage />,
     title: "story_details",
+    priv: true,
+  },
+  {
+    path: "/policy-violation",
+    element: <ViolationPage />,
+    title: "policy_violation",
     priv: true,
   },
 ];

@@ -84,9 +84,9 @@ app.use(xss());
 
 app.set('view engine', 'pug');
 
-// app.use(express.static('public'));
+app.use(express.static('public'));
 
-// app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.use('/api/v1/admins', adminsRouter);
 app.use('/api/v1/users', usersRouter);

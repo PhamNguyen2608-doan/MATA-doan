@@ -1,10 +1,13 @@
 # Description
 - MATA social network project aims to create a platform that enables users to connect, share information,... through posts, comments, and messages,...
 # Features
+- Form validations using Formik, Yup, error massages.
 - Implemented real-time notifications and notification history management
 - Real-time messaging
 - Group chats with admin-only member management
 - CRUD user, post, comment, Friends, 
+- Friendship system with send, cancel ,accept friend requests
+- Upload profile picture, cover and ability to Crop, zoom the photo
 - Post Moderator Bot
 # Technologies
 - ReactJs, Redux, Nodejs (Expessjs), MongoDb, JWT, Cloudinary, Socket.io, Python, gRPC, OpenCv

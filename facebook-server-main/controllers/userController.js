@@ -172,7 +172,7 @@ exports.getUserPosts = catchAsync(async (req, res, next) => {
     return next(new AppError('No user found with that username', 404));
   }
 
-  let filter = { user: user.id };
+  let filter = { user: user.id, is_active: true };
   const features = new APIFeatures(Post.find(filter), req.query)
     .filter()
     .sort()

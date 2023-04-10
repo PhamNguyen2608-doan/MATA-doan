@@ -1,3 +1,4 @@
+
 import React from "react";
 import Moment from "react-moment";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +35,14 @@ function Notification({ toast, t, notification }) {
         }}
       >
         <div className={styles.img}>
-          <img src={notification?.sender?.photo} alt="" />
+          <img
+            src={
+              notification?.sender?.photo ||
+              "/images/mata-logo-main.png"
+            }
+            alt=""
+          />
+
           <img
             className={styles.type}
             src={`../../../reacts/${

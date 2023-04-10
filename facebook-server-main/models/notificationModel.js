@@ -10,7 +10,7 @@ const notificationSchema = mongoose.Schema(
 
     type: {
       type: String,
-      enum: ['react', 'comment', 'follow', 'friend'],
+      enum: ['react', 'comment', 'follow', 'friend', 'policy_violation'],
       required: [true, 'message type is required'],
     },
     click: {

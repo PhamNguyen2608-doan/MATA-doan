@@ -35,3 +35,18 @@
 // // Initialize Firebase
 // export const app = initializeApp(firebaseConfig);
 // export const messaging = getMessaging(app);
+import { initializeApp } from "firebase/app";
+import { getMessaging } from "firebase/messaging";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBryS96v3YElA8-TBBjqjDb126nOqIhqmU",
+  authDomain: "noname-2ebf0.firebaseapp.com",
+  projectId: "noname-2ebf0",
+  storageBucket: "noname-2ebf0.appspot.com",
+  messagingSenderId: "773002362521",
+  appId: "1:773002362521:web:6207b513725f366f8d0208",
+  measurementId: "G-3KJ6V8BGJK",
+};
+
+export const app = initializeApp(firebaseConfig);
+export const messaging = getMessaging(app);

@@ -9,6 +9,9 @@ const Comment = require('../models/commentModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
+const cloudinary = require('cloudinary').v2;
+
+
 const {
   uploadToCloudinary,
   deleteImageFromCloudinary,
@@ -148,7 +151,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 
     return post;
   });
-  console.log("get all post")
+  console.log('get all post');
   // console.log(reactions);
   res.status(200).json({
     status: 'success',
@@ -199,28 +202,41 @@ exports.getPost = catchAsync(async (req, res, next) => {
 //     status: 'success',
 //   });
 // });
+
 exports.deletePost = catchAsync(async (req, res, next) => {
-  const post = req.params.postID;
-  const user = req.user.id;
+  const Post = mongoose.model('Post'); // Assuming your Post model is named 'Post'
+  const postId = req.params.postID;
+  const userId = req.user.id;
 
-  const checkPost = await Post.findById(post);
-  if (!checkPost) return next(new AppError('No post found', 404));
+  const post = await Post.findById(postId);
+  if (!post) return next(new AppError('No post found', 404));
 
-  if (checkPost.user.id !== user)
-    return next(new AppError('You are not the owner of this post', 404));
+  if (post.user._id.toString() !== userId) {
+    return next(new AppError('You are not the owner of this post', 403));
+  }
 
   // Delete images from Cloudinary
-  if (checkPost.images && checkPost.images.length > 0) {
-    for (const imageUrl of checkPost.images) {
+  if (post.images && post.images.length > 0) {
+    for (const imageUrl of post.images) {
       const publicId = getPublicIdFromUrl(imageUrl);
-      await deleteImageFromCloudinary(publicId);
+      try {
+        const deletionResult = await deleteImageFromCloudinary(publicId);
+        console.log(
+          `Image deletion result for ID ${publicId}: `,
+          deletionResult
+        );
+      } catch (error) {
+        console.error(
+          `Error deleting image with ID ${publicId} from Cloudinary: `,
+          error
+        );
+      }
     }
   }
 
-  checkPost.deleted = true;
-  await checkPost.save({ validateBeforeSave: false });
+  post.deleted = true;
+  await post.save({ validateBeforeSave: false });
 
-  // Send reponse
   res.status(200).json({
     status: 'success',
   });

@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary');
+const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -9,7 +9,7 @@ cloudinary.config({
 exports.uploadToCloudinary = async (file, path) => {
   return new Promise((resolve, reject) => {
     if (file) {
-      cloudinary.v2.uploader
+      cloudinary.uploader
         .upload_stream({ folder: path }, (err, res) => {
           if (err) {
             console.log(err);
@@ -20,13 +20,15 @@ exports.uploadToCloudinary = async (file, path) => {
           }
         })
         .end(file);
+    } else {
+      reject('No file provided');
     }
   });
 };
 
 exports.getImages = async (path, max, sort) => {
   return new Promise((resolve, reject) => {
-    cloudinary.v2.search
+    cloudinary.search
       .expression(`${path}`)
       .sort_by('created_at', `${sort}`)
       .max_results(max)
@@ -39,18 +41,23 @@ exports.getImages = async (path, max, sort) => {
       });
   });
 };
-exports.deleteImageFromCloudinary=async (publicId)=> {
-  try {
-    const result = await cloudinary.uploader.destroy(publicId);
-    return result;
-  } catch (error) {
-    console.error('Error deleting image from Cloudinary:', error);
-    throw error;
-  }
-}
- exports.getPublicIdFromUrl= (url) => {
+
+exports.getPublicIdFromUrl = (url) => {
   const pathArray = url.split('/');
   const fileName = pathArray[pathArray.length - 1];
   const [publicId] = fileName.split('.');
   return publicId;
-}
+};
+
+// exports.deleteImageFromCloudinary = async (publicId) => {
+//   try {
+//     const result = await cloudinary.uploader.destroy(publicId);
+//     return result;
+//   } catch (error) {
+//     console.error('Error deleting image from Cloudinary:', error);
+//     throw error;
+//   }
+// };
+exports.deleteImageFromCloudinary = (publicId, callback) => {
+  return cloudinary.api.delete_resources(publicId, callback);
+};

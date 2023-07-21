@@ -28,7 +28,7 @@ const port = process.env.PORT || 3000;
 const server = httpServer.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
-cron.schedule('*/5 * * * *', () => {
+cron.schedule('*/1 * * * *', () => {
   PostScanner();
 });
 process.on('unhandledRejection', (err) => {
